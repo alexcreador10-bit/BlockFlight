@@ -1,0 +1,22 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    background:#6bb7ff;
+    overflow:hidden;
+}
+
+canvas{
+    width:400px;
+    height:600px;
+    border:4px solid black;
+    background:#87CEEB;
+    image-rendering:pixelated;
+}
