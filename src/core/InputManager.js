@@ -83,6 +83,20 @@ export class InputManager {
         return this._algunaTecla(CONFIG.teclas.reiniciar);
     }
 
+    silencioRecienPulsado(){
+        return this.teclasRecienPulsadas.has("KeyM");
+    }
+
+    // Marca el toque como ya usado para que un estado no lo procese de nuevo
+    // (p. ej. al pulsar el icono de silencio, evita que también se salte).
+    consumirPuntero(){
+        this.punteroRecienAbajo = false;
+    }
+
+    hayInteraccion(){
+        return this.punteroRecienAbajo || this.teclasRecienPulsadas.size > 0;
+    }
+
     // Se llama al final de cada frame, tras procesar la lógica.
     limpiarFrame(){
         this.teclasRecienPulsadas.clear();

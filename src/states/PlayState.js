@@ -26,12 +26,14 @@ export class PlayState {
         if(g.input.saltarRecienPulsado() || g.input.punteroRecienAbajo){
             g.player.saltar();
             g.particles.saltoDe(g.player);
+            g.audio.playFlap();
         }
 
         g.player.update(step);
 
         const ganados = g.obstacles.update(dt, step, g.puntos, (obstaculo) => {
             g.particles.puntoEn(obstaculo.x + obstaculo.ancho, obstaculo.y);
+            g.audio.playScore();
         });
         g.puntos += ganados;
 
@@ -44,6 +46,7 @@ export class PlayState {
 
         if(g.obstacles.colisionaCon(g.player.hitbox)){
             g.particles.muerteDe(g.player);
+            g.audio.playHit();
             g.states.cambiar("gameover");
         }
     }

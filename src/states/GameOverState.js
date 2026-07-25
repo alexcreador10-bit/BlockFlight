@@ -28,10 +28,12 @@ export class GameOverState {
     }
 
     _reintentar(){
+        this.game.audio.playClick();
         this.game.states.cambiar("play");
     }
 
     _menu(){
+        this.game.audio.playClick();
         this.game.states.cambiar("menu");
     }
 

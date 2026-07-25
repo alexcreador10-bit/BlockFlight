@@ -26,17 +26,33 @@ export class Obstacle {
         return this.x + this.ancho < 0;
     }
 
+    // Se dibuja como una columna de bloques apilados (estética Minecraft):
+    // cuadrícula de celdas con biselado claro/oscuro por celda.
     render(ctx){
+        const cel = 20; // tamaño de cada bloque
+
         // Cuerpo.
         ctx.fillStyle = CONFIG.obstaculo.color;
         ctx.fillRect(this.x, this.y, this.ancho, this.alto);
 
-        // Cima más clara: sugiere volumen manteniendo el marrón de bloque.
-        ctx.fillStyle = CONFIG.obstaculo.colorCima;
-        ctx.fillRect(this.x, this.y, this.ancho, 10);
+        // Biselado por celda: luz arriba-izquierda, sombra abajo-derecha.
+        for(let fy = this.y; fy < this.y + this.alto; fy += cel){
+            for(let fx = this.x; fx < this.x + this.ancho; fx += cel){
+                const w = Math.min(cel, this.x + this.ancho - fx);
+                const h = Math.min(cel, this.y + this.alto - fy);
 
-        // Borde derecho en sombra para dar profundidad.
-        ctx.fillStyle = CONFIG.obstaculo.colorBorde;
-        ctx.fillRect(this.x + this.ancho - 6, this.y, 6, this.alto);
+                ctx.fillStyle = "rgba(255,255,255,0.10)";
+                ctx.fillRect(fx, fy, w, 2);           // luz superior
+                ctx.fillRect(fx, fy, 2, h);           // luz izquierda
+
+                ctx.fillStyle = "rgba(0,0,0,0.18)";
+                ctx.fillRect(fx, fy + h - 2, w, 2);   // sombra inferior
+                ctx.fillRect(fx + w - 2, fy, 2, h);   // sombra derecha
+            }
+        }
+
+        // Cima más clara (remate del bloque superior).
+        ctx.fillStyle = CONFIG.obstaculo.colorCima;
+        ctx.fillRect(this.x, this.y, this.ancho, 6);
     }
 }

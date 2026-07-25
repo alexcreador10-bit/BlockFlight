@@ -23,6 +23,7 @@ export class MenuState {
     }
 
     _jugar(){
+        this.game.audio.playClick();
         this.game.states.cambiar("play");
     }
 

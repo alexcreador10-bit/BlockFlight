@@ -21,10 +21,12 @@ export class PauseState {
     }
 
     _reanudar(){
+        this.game.audio.playClick();
         this.game.states.reanudar("play");
     }
 
     _menu(){
+        this.game.audio.playClick();
         this.game.states.cambiar("menu");
     }
 

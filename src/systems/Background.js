@@ -10,6 +10,23 @@ export class Background {
     constructor(){
         this.desplazamientoSuelo = 0;
         this.nubes = this._crearNubes();
+        this.speckles = this._crearSpeckles(); // motas fijas de la tierra (estilo bloque)
+    }
+
+    // Motas de la tierra precalculadas una sola vez: dan textura tipo Minecraft
+    // sin recalcular (ni parpadear) cada frame.
+    _crearSpeckles(){
+        const motas = [];
+        const { yTierra, altoTierra } = CONFIG.suelo;
+        for(let i = 0; i < 90; i++){
+            motas.push({
+                x: Math.random() * CONFIG.ancho,
+                y: yTierra + 4 + Math.random() * (altoTierra - 8),
+                tam: 3 + Math.random() * 3,
+                oscura: Math.random() < 0.6
+            });
+        }
+        return motas;
     }
 
     _crearNubes(){
@@ -64,21 +81,36 @@ export class Background {
         }
     }
 
+    // Suelo con estética de bloque de Minecraft: capa de césped verde con borde
+    // pixelado y tierra con motas. La capa superior de píxeles se desplaza para
+    // reforzar la sensación de movimiento.
     _dibujarSuelo(ctx){
         const { y, altoHierba, yTierra, altoTierra } = CONFIG.suelo;
 
-        // Hierba.
+        // Césped.
         ctx.fillStyle = CONFIG.colores.hierba;
         ctx.fillRect(0, y, CONFIG.ancho, altoHierba);
 
-        // Franjas de hierba que se desplazan (feedback de velocidad).
-        ctx.fillStyle = CONFIG.colores.hierbaOscura;
-        for(let x = -40; x < CONFIG.ancho + 40; x += 40){
-            ctx.fillRect(x - this.desplazamientoSuelo, y, 20, 6);
+        // Borde superior pixelado (bloques de 10px alternando tono, con scroll).
+        for(let x = -20; x < CONFIG.ancho + 20; x += 10){
+            const px = x - (this.desplazamientoSuelo % 20);
+            ctx.fillStyle = (Math.floor((x) / 10) % 2 === 0)
+                ? CONFIG.colores.hierbaOscura : CONFIG.colores.hierba;
+            ctx.fillRect(px, y, 10, 8);
         }
+
+        // Línea de sombra bajo el césped (separación césped/tierra).
+        ctx.fillStyle = "rgba(0,0,0,0.15)";
+        ctx.fillRect(0, yTierra - 3, CONFIG.ancho, 3);
 
         // Tierra.
         ctx.fillStyle = CONFIG.colores.tierra;
         ctx.fillRect(0, yTierra, CONFIG.ancho, altoTierra);
+
+        // Motas de la tierra (píxeles claros y oscuros, estilo bloque).
+        for(const m of this.speckles){
+            ctx.fillStyle = m.oscura ? "rgba(0,0,0,0.18)" : "rgba(255,255,255,0.10)";
+            ctx.fillRect(m.x, m.y, m.tam, m.tam);
+        }
     }
 }
