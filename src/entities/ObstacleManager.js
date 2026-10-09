@@ -48,7 +48,9 @@ export class ObstacleManager {
         this.acumuladorSpawnMs += dt;
         if(this.acumuladorSpawnMs >= this._intervaloSpawn(puntos)){
             this.acumuladorSpawnMs = 0;
-            this.obstaculos.push(new Obstacle(velocidad));
+            const c = CONFIG.obstaculo.colgante;
+            const colgante = puntos >= c.puntosMinimos && Math.random() < c.probabilidad;
+            this.obstaculos.push(new Obstacle(velocidad, colgante));
         }
 
         let ganados = 0;

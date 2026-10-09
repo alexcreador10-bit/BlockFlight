@@ -46,7 +46,15 @@ export const CONFIG = {
         alturaVariable: 200,
         color: "#8B5A2B",
         colorBorde: "#6E4520",
-        colorCima: "#A56B34"
+        colorCima: "#A56B34",
+        // Columnas colgantes del techo: aparecen a partir de cierta puntuación
+        // y obligan a volar por debajo en lugar de siempre por encima.
+        colgante: {
+            puntosMinimos: 8,
+            probabilidad: 0.35,
+            alturaMinima: 90,
+            alturaVariable: 140
+        }
     },
 
     // Dificultad progresiva: parte de los valores originales y se endurece

@@ -6,12 +6,16 @@ import { CONFIG } from "../config.js";
 
 export class Obstacle {
 
-    constructor(velocidad){
-        const altura = Math.random() * CONFIG.obstaculo.alturaVariable
-            + CONFIG.obstaculo.alturaMinima;
+    constructor(velocidad, colgante = false){
+        const c = CONFIG.obstaculo.colgante;
+        const altura = colgante
+            ? Math.random() * c.alturaVariable + c.alturaMinima
+            : Math.random() * CONFIG.obstaculo.alturaVariable
+                + CONFIG.obstaculo.alturaMinima;
 
+        this.colgante = colgante;
         this.x = CONFIG.ancho;
-        this.y = CONFIG.suelo.y - altura;
+        this.y = colgante ? 0 : CONFIG.suelo.y - altura;
         this.ancho = CONFIG.obstaculo.ancho;
         this.alto = altura;
         this.velocidadX = -velocidad;
@@ -51,8 +55,9 @@ export class Obstacle {
             }
         }
 
-        // Cima más clara (remate del bloque superior).
+        // Remate más claro: arriba en columnas de suelo, abajo en colgantes.
         ctx.fillStyle = CONFIG.obstaculo.colorCima;
-        ctx.fillRect(this.x, this.y, this.ancho, 6);
+        const yRemate = this.colgante ? this.y + this.alto - 6 : this.y;
+        ctx.fillRect(this.x, yRemate, this.ancho, 6);
     }
 }
